@@ -16,6 +16,7 @@ export default function PatientRegistrationForm() {
   const [patient, setPatient] = useState({
     fullName: '',
         role:'Patient',
+        address:'',
     email: '',
     password: '',
     contactNumber: '',
@@ -53,10 +54,10 @@ export default function PatientRegistrationForm() {
   const handleRegister =async () => {
     const {
       fullName, email, password, contactNumber, profilePic,
-      sex, dateOfBirth, medical_condition
+      sex, dateOfBirth, medical_condition, address
     } = patient;
 
-    if (!fullName || !email || !password ||  !contactNumber ||
+    if (!fullName || !email || !password ||  !contactNumber || !address||
         !profilePic || !medical_condition) {
       Alert.alert('Error', 'Please fill in all fields and select a profile picture');
       return;
@@ -75,6 +76,7 @@ try{
        role:'Patient',
     patientID,
         fullName,
+        address,
         email,
         password,
         contactNumber,
@@ -91,6 +93,7 @@ try{
     setPatient({
        fullName: '',
         email: '',
+        address:'',
         password: '',
         contactNumber: '',
         profilePic: null,
@@ -120,6 +123,14 @@ try{
 
       <TextInput
         label="Full Name"
+        value={patient.address}
+        onChangeText={(text) => handleChange('address', text)}
+        style={styles.input}
+      />
+
+
+       <TextInput
+        label="Address"
         value={patient.fullName}
         onChangeText={(text) => handleChange('fullName', text)}
         style={styles.input}

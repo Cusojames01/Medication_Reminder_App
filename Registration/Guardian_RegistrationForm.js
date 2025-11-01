@@ -16,6 +16,7 @@ export default function GuardianRegistrationForm() {
   const [guardian, setGuardian] = useState({
     fullName: '',
     email: '',
+    address:'',
     password: '',
     contactNumber: '',
     profilePic: null,
@@ -52,22 +53,19 @@ export default function GuardianRegistrationForm() {
   const handleRegister = async() => {
     const {
       fullName, email, password, contactNumber, profilePic,
-      sex, dateOfBirth,  relationship_to_patient
+      sex, dateOfBirth,  relationship_to_patient, address
     } = guardian;
 
-    if (!fullName || !email || !password|| !contactNumber || !sex ||  !dateOfBirth ||
+    if (!fullName || !email || !password|| !contactNumber || !sex ||  !dateOfBirth || !address||
         !profilePic|| ! relationship_to_patient ) {
       Alert.alert('Error', 'Please fill in all fields and select a profile picture');
       return;
     }
 
-     if (!password || typeof password !== "string") {
-        Alert.alert("Error", "Invalid password. Please enter a valid string.");
-        return;
-     }
+
     
  try{
-    const hashedPassword = await bcrypt.hash(password, 10);
+
     const guardianID = generateGuardianID();
     const guardianRef = doc(db, "Users", guardianID);
     await setDoc(guardianRef,{
@@ -75,6 +73,7 @@ export default function GuardianRegistrationForm() {
       guardianID,
         fullName,
         sex,
+        address,
         dateOfBirth,
         email,
         password,
@@ -90,6 +89,7 @@ export default function GuardianRegistrationForm() {
       setGuardian({
        fullName: '',
         email: '',
+        address:'',
         password: '',
         contactNumber: '',
         profilePic: null,
@@ -121,6 +121,13 @@ export default function GuardianRegistrationForm() {
         label="Full Name"
         value={guardian.fullName}
         onChangeText={(text) => handleChange('fullName', text)}
+        style={styles.input}
+      />
+
+      <TextInput
+        label="Address"
+        value={guardian.address}
+        onChangeText={(text) => handleChange('address', text)}
         style={styles.input}
       />
       <TextInput

@@ -16,6 +16,7 @@ function generateDoctorID() {
 export default function DoctorRegistrationForm() {
   const [doctor, setDoctor] = useState({
      role:'Doctor',
+     address:'',
     fullName: '',
     email: '',
     password: '',
@@ -59,7 +60,7 @@ export default function DoctorRegistrationForm() {
       sex, licenseNumber, dateOfBirth, hospital
     } = doctor;
 
-    if (!fullName || !email || !password || !specialization || !contactNumber ||
+    if (!fullName || !email || !password || !specialization || !contactNumber || !address||
         !profilePic || !licenseNumber || !hospital) {
       Alert.alert('Error', 'Please fill in all fields and select a profile picture');
       return;
@@ -73,6 +74,7 @@ export default function DoctorRegistrationForm() {
         const DoctorRef = doc(db, "Users", DoctorID);
         await setDoc(DoctorRef,{
           role:'Doctor',
+          address,
           DoctorID,
           fullName,
           licenseNumber,
@@ -92,6 +94,7 @@ export default function DoctorRegistrationForm() {
         fullName:'',
         licenseNumber:'',
         password: '',
+        address:'',
         email: '',
         specialization: '',
         contactNumber: '',
@@ -126,6 +129,15 @@ export default function DoctorRegistrationForm() {
         label="Full Name"
         value={doctor.fullName}
         onChangeText={(text) => handleChange('fullName', text)}
+        style={styles.input}
+      />
+
+
+      
+      <TextInput
+        label="Address"
+        value={doctor.address}
+        onChangeText={(text) => handleChange('address', text)}
         style={styles.input}
       />
       <TextInput
