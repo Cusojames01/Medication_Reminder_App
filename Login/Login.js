@@ -9,49 +9,49 @@ export default function LoginForm({ navigation }) {
   const [password, setPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please enter both email and password");
+ const handleLogin = async () => {
+  if (!email || !password) {
+    Alert.alert("Error", "Please enter both email and password");
+    return;
+  }
+
+  try {
+    // Query the "Users" collection where email matches
+    const q = query(collection(db, "Users"), where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      Alert.alert("Error", "No user found with this email");
       return;
     }
 
-    try {
-      // Query the "Users" collection where email matches
-      const q = query(collection(db, "Users"), where("email", "==", email));
-      const querySnapshot = await getDocs(q);
+    // Get user data
+    const userData = querySnapshot.docs[0].data();
 
-      if (querySnapshot.empty) {
-        Alert.alert("Error", "No user found with this email");
-        return;
-      }
-
-      // Get user data
-      const userData = querySnapshot.docs[0].data();
-
-      if (userData.password !== password) {
-        Alert.alert("Error", "Incorrect password");
-        return;
-      }
-
-      // ✅ Successful login
-      Alert.alert("Welcome!", `Logged in as ${userData.fullName}\nRole: ${userData.role}`);
-
-      // Example: Redirect based on role
-      if (userData.role === "Guardian") {
-        navigation.navigate("GuardianDashboard");
-      } else if (userData.role === "Doctor") {
-        navigation.navigate("DoctorDashboard");
-      } else if (userData.role === "Patient") {
-        navigation.navigate("PatientDashboard");
-      } else {
-        navigation.navigate("Home");
-      }
-
-    } catch (error) {
-      console.error("Login error:", error);
-      Alert.alert("Error", "Something went wrong while logging in.");
+    if (userData.password !== password) {
+      Alert.alert("Error", "Incorrect password");
+      return;
     }
-  };
+
+    Alert.alert("Welcome!", `Logged in as ${userData.fullName}\nRole: ${userData.role}`);
+
+    // Redirect based on role and pass the role-specific ID
+    if (userData.role === "Doctor") {
+      navigation.navigate("DoctorHome", { userID: userData.DoctorID });
+    } else if (userData.role === "Guardian") {
+      navigation.navigate("GuardianHome", { userID: userData.guardianID });
+    } else if (userData.role === "Patient") {
+      navigation.navigate("PatientHome", { userID: userData.patientID });
+    } else {
+      navigation.navigate("Home");
+    }
+
+  } catch (error) {
+    console.error("Login error:", error);
+    Alert.alert("Error", "Something went wrong while logging in.");
+  }
+};
+
 
   return (
     <View style={styles.container}>
